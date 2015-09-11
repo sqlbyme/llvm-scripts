@@ -4,7 +4,7 @@ import os
 import shutil
 
 HOME = os.environ['HOME']
-benchmark = '/tmp/benchmark_llvm' % HOME
+benchmark = '/tmp/benchmark_llvm'
 LLVM_SRC = '%s/llvm.src' % benchmark
 CLANG_SRC = '%s/clang.src' % benchmark
 LLD_SRC = '%s/lld.src' % benchmark
@@ -19,32 +19,24 @@ def git(*args):
 def svn(*args):
   return subprocess.check_call([which('svn')] + list(args))
 
-def setup(internet=True, use_git=True):
+def setup():
   if not os.path.exists(benchmark):
     os.makedirs(benchmark)
     os.makedirs(obj)
     os.chdir(benchmark)
-    if use_git:
-      clone_url_prefix = 'git://assets.llvm.scea.com/'
-      if internet:
-        clone_url_prefix = 'http://llvm.org/git/'
-      git('clone', '%sllvm.git' % clone_url_prefix, LLVM_SRC)
-      git('clone', '%sclang.git' % clone_url_prefix, CLANG_SRC)
-      git('clone', '%slld.git' % clone_url_prefix, LLD_SRC)
-    else:
-      clone_url_prefix = 'http://llvm.org/svn/llvm-project/'
-      svn('checkout', '%sllvm/trunk' % clone_url_prefix, LLVM_SRC)
-      svn('checkout', '%scfe/trunk' % clone_url_prefix, CLANG_SRC)
-      svn('checkout', '%slld/trunk' % clone_url_prefix, LLD_SRC)
+    clone_url_prefix = 'http://llvm.org/svn/llvm-project/'
+    svn('checkout', '%sllvm/trunk' % clone_url_prefix, LLVM_SRC)
+    svn('checkout', '%scfe/trunk' % clone_url_prefix, CLANG_SRC)
+    svn('checkout', '%slld/trunk' % clone_url_prefix, LLD_SRC)
   else:
     shutil.rmtree(obj, True)
     os.makedirs(obj)
-    #os.chdir(src)
-    #git('pull', 'origin', 'master')
-    #os.chdir(src + '/tools/clang')
-    #git('pull', 'origin', 'master')
-    #os.chdir(src + '/tools/lld')
-    #git('pull', 'origin', 'master')
+    os.chdir(LLVM_SRC)
+    svn('update')
+    os.chdir(CLANG_SRC)
+    svn('update')
+    os.chdir(LLD_SRC)
+    svn('update')
 
   os.chdir(obj)
 

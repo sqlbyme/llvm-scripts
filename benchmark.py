@@ -13,7 +13,7 @@ import platform
 import sys
 import shutil
 
-setup(internet=True, use_git=False)
+setup()
 
 def build_stage(n):
     inst_dir = obj + '/llvm-inst%s' % n
