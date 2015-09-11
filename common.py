@@ -4,8 +4,10 @@ import os
 import shutil
 
 HOME = os.environ['HOME']
-benchmark = '%s/benchmark_llvm' % HOME
-src = '%s/llvm.src' % benchmark
+benchmark = '/tmp/benchmark_llvm' % HOME
+LLVM_SRC = '%s/llvm.src' % benchmark
+CLANG_SRC = '%s/clang.src' % benchmark
+LLD_SRC = '%s/lld.src' % benchmark
 obj = '%s/llvm.obj' % benchmark
 
 def which(x):
@@ -14,28 +16,35 @@ def which(x):
 def git(*args):
   return subprocess.check_call([which('git')] + list(args))
 
+def svn(*args):
+  return subprocess.check_call([which('svn')] + list(args))
 
-def setup(internet=True):
+def setup(internet=True, use_git=True):
   if not os.path.exists(benchmark):
     os.makedirs(benchmark)
     os.makedirs(obj)
     os.chdir(benchmark)
-    if internet:
-      clone_url_prefix = 'http://llvm.org/git/'
-    else:
+    if use_git:
       clone_url_prefix = 'git://assets.llvm.scea.com/'
-    git('clone', '%sllvm.git' % clone_url_prefix, src)
-    git('clone', '%sclang.git' % clone_url_prefix, src + '/tools/clang')
-    git('clone', '%slld.git' % clone_url_prefix, src + '/tools/lld')
+      if internet:
+        clone_url_prefix = 'http://llvm.org/git/'
+      git('clone', '%sllvm.git' % clone_url_prefix, LLVM_SRC)
+      git('clone', '%sclang.git' % clone_url_prefix, CLANG_SRC)
+      git('clone', '%slld.git' % clone_url_prefix, LLD_SRC)
+    else:
+      clone_url_prefix = 'http://llvm.org/svn/llvm-project/'
+      svn('checkout', '%sllvm/trunk' % clone_url_prefix, LLVM_SRC)
+      svn('checkout', '%scfe/trunk' % clone_url_prefix, CLANG_SRC)
+      svn('checkout', '%slld/trunk' % clone_url_prefix, LLD_SRC)
   else:
     shutil.rmtree(obj, True)
     os.makedirs(obj)
-    os.chdir(src)
-    git('pull', 'origin', 'master')
-    os.chdir(src + '/tools/clang')
-    git('pull', 'origin', 'master')
-    os.chdir(src + '/tools/lld')
-    git('pull', 'origin', 'master')
+    #os.chdir(src)
+    #git('pull', 'origin', 'master')
+    #os.chdir(src + '/tools/clang')
+    #git('pull', 'origin', 'master')
+    #os.chdir(src + '/tools/lld')
+    #git('pull', 'origin', 'master')
 
   os.chdir(obj)
 
@@ -78,7 +87,10 @@ def run_cmake(CC='clang', CXX='clang++', AR='ar',
                  '-DCMAKE_BUILD_TYPE=%s' % buildtype,
                  '-DLLVM_ENABLE_SPHINX=OFF',
                  '-DCOMPILER_RT_BUILD_SHARED_ASAN=OFF',
-                 '-DLLVM_TARGETS_TO_BUILD=X86' ]
+                 '-DLLVM_TARGETS_TO_BUILD=X86',
+                 '-DLLVM_EXTERNAL_CLANG_SOURCE_DIR=%s' % CLANG_SRC,
+                 '-DLLVM_EXTERNAL_LLD_SOURCE_SIR=%s' % LLD_SRC,
+                ]
 
   # FIXME: Talk with espindola about linker flag usage 
   #linker_flags=[]
@@ -123,5 +135,5 @@ def run_cmake(CC='clang', CXX='clang++', AR='ar',
 
   os.environ['CC'] = CC
   os.environ['CXX'] = CXX
-  cmd = ['cmake', src ] + CMAKE_ARGS
+  cmd = ['cmake', LLVM_SRC ] + CMAKE_ARGS
   subprocess.check_call(cmd)

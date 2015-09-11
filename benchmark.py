@@ -3,7 +3,7 @@
 from common import run_cmake
 from common import setup
 from common import benchmark
-from common import src
+from common import LLVM_SRC
 from common import obj
 
 
@@ -13,7 +13,7 @@ import platform
 import sys
 import shutil
 
-setup(internet=True)
+setup(internet=True, use_git=False)
 
 def build_stage(n):
     inst_dir = obj + '/llvm-inst%s' % n
@@ -57,12 +57,12 @@ def build_stage(n):
     
     os.chdir('..')
 
-assert os.path.exists(src + '/tools/clang')
-assert os.path.exists(src + '/tools/lld')
-if platform.system() == 'Darwin':
-    assert not os.path.exists(src + '/projects/libcxx')
-else:
-    assert not os.path.exists(src + '/projects/libcxx')
-assert not os.path.exists(src + '/tools/clang/tools/extra')
+#assert os.path.exists( + '/tools/clang')
+#assert os.path.exists(src + '/tools/lld')
+#if platform.system() == 'Darwin':
+#    assert not os.path.exists(src + '/projects/libcxx')
+#else:
+#    assert not os.path.exists(src + '/projects/libcxx')
+#assert not os.path.exists(src + '/tools/clang/tools/extra')
 build_stage(1)
 build_stage(2)
