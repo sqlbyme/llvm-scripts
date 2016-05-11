@@ -10,7 +10,9 @@ def build_clang_lld_llvm():
     os.system('clear')
     print 'Starting build timing test.'
 
-    WORKDIR = '/Users/medwards/apps/scea/llvm'
+    BASE_DIR = os.environ['HOME']
+    # WORKDIR should be changed to suit.
+    WORKDIR = '%s/pg/llvm' % BASE_DIR
     CLANG_SRC_DIR = '%s/clang.src' % WORKDIR
     LLD_SRC_DIR = '%s/lld.src' % WORKDIR
     LLVM_SRC_DIR = '%s/llvm.src' % WORKDIR
@@ -36,7 +38,7 @@ def build_clang_lld_llvm():
         print '%s was updated to rev:%s' % (path,git_rev)
 
     if os.path.exists(LLVM_OBJ_DIR):
-	    shutil.rmtree(LLVM_OBJ_DIR)
+	    shutil.rmtree(LLVM_OBJ_DIR, True)
 	    os.mkdir(LLVM_OBJ_DIR)
 	    os.chdir(LLVM_OBJ_DIR)
 	    print 'Removed and re-created llvm.obj dir.'
@@ -83,11 +85,6 @@ def build_clang_lld_llvm():
     print check_output(ninja_command)
 
     print 'Done for now...'
-
-def build_game7():
-
-    print 'Fetching latest game7 updates.'
-    os.chdir(WORKDIR)
 
 def main():
     build_clang_lld_llvm()
