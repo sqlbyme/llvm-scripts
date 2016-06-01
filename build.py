@@ -115,6 +115,8 @@ def build_clang_lld_llvm():
 
     print 'Done for now...'
 
+    print "Total Ninja Time: %f" % diff_time
+
 def main():
     build_clang_lld_llvm()
 
