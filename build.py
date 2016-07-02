@@ -1,27 +1,34 @@
 #!/usr/bin/env python
+################################################################################
+# Copyright (c) 2016 Apple, Inc. All Rights Reserved
+################################################################################
+# Author: Mike Edwards <medwards@apple.com>
+################################################################################
+# Description: A utility to fetch latest LLVM, Clang & LLD and build them.
+################################################################################
+
 
 import os
 import shutil
-from subprocess import check_call, check_output
 import sys
 import time
+
+
+from __future__ import print_function
+from subprocess import check_call, check_output
+
 
 # TODO: Add in some argv processing
 # TODO: Add some default args which cause us to build
 # llvm, clang ad lld by default
 # TODO: Add a docstring to provide help via the argv 
 # processing thingy
-# TODO: Add a function for printing a report header 
-# and a section header
-
 
 
 def build_clang_lld_llvm():
 
-    # TODO: Remove this clear statement and just print a report header instead.
-    os.system('clear')
-    # TODO: this is a good example of a place to use a section header
-    print 'Starting build timing test.'
+    print(">>>> Beginning LLVM & Clang Build. <<<<")
+    print('---- Starting build timing test. ----')
 
     BASE_DIR = '%s/pg' % os.environ['HOME']
     WORK_DIR = '%s/llvm' % BASE_DIR
@@ -90,35 +97,30 @@ def build_clang_lld_llvm():
 		'-GNinja',
 		LLVM_SRC_DIR
 	]
-    print 'Running CMAKE...'
+    print("Running CMAKE...")
     start_time = time.time()
-    print check_output(cmake_command)
+    print(check_output(cmake_command))
     end_time = time.time()
-    diff_time = end_time - start_time
-    print "Start Time: %f" % start_time
-    print "End Time: %f" % end_time
-    print "Total Cmake Time: %f" % diff_time
+    cmake_diff_time = end_time - start_time
 
     ninja_command = ['ninja']
-    print 'Running NINJA...'
+    print("---- Running NINJA ----")
     start_time = time.time()
-    print check_output(ninja_command)
+    print(check_output(ninja_command))
     end_time = time.time()
-    diff_time = end_time - start_time
-    print "Start Time: %f" % start_time
-    print "End Time: %f" % end_time
-    print "Total Ninja Time: %f" % diff_time
+    ninja_diff_time = end_time - start_time
 
     ninja_command = ['ninja', 'install']
-    print 'Installing binaries...'
-    print check_output(ninja_command)
+    print("---- Installing binaries ----")
+    print(check_output(ninja_command))
 
-    print 'Done for now...'
-
-    print "Total Ninja Time: %f" % diff_time
+    print("---- Timing ----")
+    print("Total Cmake Time: %f" % cmake_diff_time)
+    print("Total Ninja Time: %f" % ninja_diff_time)
 
 def main():
     build_clang_lld_llvm()
 
 if __name__ == '__main__':
     main()
+    sys.exit(0)
