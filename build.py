@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 ################################################################################
-# Copyright (c) 2016 Apple, Inc. All Rights Reserved
-################################################################################
 # Author: Mike Edwards <medwards@apple.com>
 ################################################################################
 # Description: A utility to fetch latest LLVM, Clang & LLD and build them.
