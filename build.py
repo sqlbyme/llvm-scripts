@@ -105,6 +105,8 @@ def cmake_setup():
     end_time = time.time()
     cmake_diff_time = end_time - start_time
 
+    return cmake_diff_time
+
 
 def ninja_build():
     ninja_command = ['ninja']
