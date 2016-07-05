@@ -5,14 +5,13 @@
 # Description: A utility to fetch latest LLVM, Clang & LLD and build them.
 ################################################################################
 
+from __future__ import print_function
 
 import os
 import shutil
 import sys
 import time
 
-
-from __future__ import print_function
 from subprocess import check_call, check_output
 
 
