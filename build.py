@@ -40,10 +40,7 @@ def build_clang_lld_llvm():
     LLD_UPSTREAM_URL = '%s/lld.git' % LLVM_BASE_URL
 
     if not os.path.exists(BASE_DIR):
-        print """This script expects a playground directory named 'pg' 
-            to be located in the users home directory.  Please ensure
-            this has been created prior to continuing."""
-        sys.exit(1)
+        os.mkdir(BASE_DIR)
 
     if not os.path.exists(WORK_DIR):
         os.mkdir(WORK_DIR)
