@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################
-# Author: Mike Edwards <medwards@apple.com>
+# Author: Mike Edwards <mike@sqlby.me>
 ################################################################################
 # Description: A utility to fetch latest LLVM, Clang & LLD and build them.
 ################################################################################
@@ -87,7 +87,7 @@ def cmake_setup():
 
     # Setup and run cmake for building clang, lld & llvm
     cmake_command = [
-	    'cmake',
+        'cmake',
         '-DCMAKE_MAKE_PROGRAM:STRING=%s' % NINJA_PATH,
         '-DCMAKE_BUILD_TYPE:STRING=Release',
         '-DLLVM_ENABLE_ASSERTIONS:BOOL=OFF',
@@ -98,7 +98,7 @@ def cmake_setup():
         '-DLLVM_EXTERNAL_LLD_SOURCE_DIR:PATH=%s' % LLD_SRC_DIR,
         '-GNinja',
         LLVM_SRC_DIR
-	]
+    ]
     print("Running CMAKE...")
     start_time = time.time()
     print(check_output(cmake_command))
